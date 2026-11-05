@@ -3,6 +3,8 @@
 @theme {
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-playfair), ui-serif, Georgia, serif;
+  --font-marca: var(--font-yellowtail), cursive;
+  --font-marca2: var(--font-anton), Impact, sans-serif;
 
   /* Marca ChocoFruit Daferson: rosado + blanco */
   --color-rosa-50: #fff4f8;

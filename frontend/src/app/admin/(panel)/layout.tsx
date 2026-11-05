@@ -88,10 +88,10 @@ function Navegacion({ esAdmin, onNavegar }: { esAdmin: boolean; onNavegar?: () =
                       onClick={onNavegar}
                       className={cn(
                         "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
-                        activo ? "bg-cacao-700 text-white shadow-sm" : "text-stone-600 hover:bg-stone-100 hover:text-stone-900",
+                        activo ? "bg-rosa-600 text-white shadow-sm" : "text-stone-600 hover:bg-stone-100 hover:text-stone-900",
                       )}
                     >
-                      <i.icono className={cn("size-4", activo ? "text-cacao-100" : "text-stone-400")} />
+                      <i.icono className={cn("size-4", activo ? "text-rosa-100" : "text-stone-400")} />
                       {i.label}
                     </Link>
                   </li>

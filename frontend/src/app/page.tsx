@@ -17,14 +17,13 @@ import {
   WalletCards,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { Isotipo, Logo } from "@/components/Logo";
+import { Logo, Sello } from "@/components/Logo";
 import { ActualizarEnVivo } from "@/components/publico/ActualizarEnVivo";
 import { Asistente } from "@/components/publico/Asistente";
 import { Catalogo } from "@/components/publico/Catalogo";
 import { CopiarDatos } from "@/components/publico/CopiarDatos";
 import { Encabezado } from "@/components/publico/Encabezado";
 import { IconoWhatsApp } from "@/components/publico/IconoWhatsApp";
-import { FresaIlustracion } from "@/components/publico/Ilustracion";
 import { Thumb } from "@/components/ui";
 import { fmtDinero } from "@/lib/format";
 import { MARCA } from "@/lib/marca";
@@ -128,7 +127,7 @@ export default async function Inicio() {
                 </div>
               ) : (
                 <div className="relative flex aspect-square items-center justify-center">
-                  <FresaIlustracion className="animate-flotar w-[62%] drop-shadow-[0_30px_40px_rgba(95,17,49,0.35)]" />
+                  <Sello prioridad className="animate-flotar w-[74%] shadow-[0_30px_60px_-10px_rgba(95,17,49,0.45)]" />
                 </div>
               )}
               <div className="animate-flotar absolute left-0 top-[12%] flex items-center gap-3 rounded-2xl bg-white/95 px-4 py-3 shadow-xl shadow-rosa-900/10 ring-1 ring-rosa-100 backdrop-blur [animation-delay:-2s]">
@@ -373,7 +372,7 @@ export default async function Inicio() {
           <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-rosa-500 via-rosa-600 to-rosa-700 px-6 py-16 text-center text-white shadow-2xl shadow-rosa-600/30 sm:px-12">
             <div className="absolute -left-10 -top-10 size-48 rounded-full bg-white/10" />
             <div className="absolute -bottom-16 -right-10 size-64 rounded-full bg-white/10" />
-            <Isotipo className="relative mx-auto size-16 drop-shadow-lg" />
+            <Sello className="relative mx-auto size-28 shadow-xl ring-4 ring-white/30" />
             <h2 className="relative mt-6 font-display text-4xl font-semibold leading-tight sm:text-5xl">¿Lista la sorpresa?</h2>
             <p className="relative mx-auto mt-4 max-w-xl text-lg text-rosa-50">Escríbenos y la preparamos juntos. Nosotros nos encargamos de que sea inolvidable.</p>
             <a
@@ -391,9 +390,12 @@ export default async function Inicio() {
       {/* ============================== PIE */}
       <footer className="border-t border-rosa-100 bg-rosa-50/60">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
-          <div>
-            <Logo />
-            <p className="mt-4 max-w-xs text-sm text-stone-600">{MARCA.lema}.</p>
+          <div className="flex items-start gap-4">
+            <Sello className="size-20 shrink-0 shadow-md" />
+            <div>
+              <Logo sinIsotipo />
+              <p className="mt-3 max-w-xs text-sm text-stone-600">{MARCA.lema}.</p>
+            </div>
           </div>
           <div className="text-sm">
             <p className="font-semibold text-stone-900">Contacto</p>

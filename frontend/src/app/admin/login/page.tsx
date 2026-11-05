@@ -3,7 +3,7 @@
 import { LogIn } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState, type FormEvent } from "react";
-import { Logo } from "@/components/Logo";
+import { Logo, Sello } from "@/components/Logo";
 import { Button, Field, Input } from "@/components/ui";
 import { ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
@@ -60,21 +60,22 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <main className="grid min-h-dvh lg:grid-cols-2">
-      <section className="relative hidden overflow-hidden bg-cacao-900 lg:block">
-        <div className="absolute -left-24 -top-24 size-96 rounded-full bg-fresa-600/30 blur-3xl" />
-        <div className="absolute -bottom-32 right-0 size-[28rem] rounded-full bg-cacao-500/40 blur-3xl" />
+      <section className="relative hidden overflow-hidden bg-gradient-to-br from-rosa-600 via-rosa-700 to-rosa-900 lg:block">
+        <div className="absolute -left-24 -top-24 size-96 rounded-full bg-white/15 blur-3xl" />
+        <div className="absolute -bottom-32 right-0 size-[28rem] rounded-full bg-rosa-400/40 blur-3xl" />
         <div className="relative flex h-full flex-col justify-between p-12">
           <Logo claro />
           <div>
+            <Sello className="mb-8 size-40 shadow-2xl ring-4 ring-white/10" />
             <p className="text-4xl font-bold leading-tight tracking-tight text-white">
               Pedidos, inventario
               <br />y finanzas en un
               <br />
-              <span className="text-fresa-500">solo lugar.</span>
+              <span className="text-rosa-200">solo lugar.</span>
             </p>
-            <p className="mt-4 max-w-sm text-cacao-200">Panel administrativo de ChocoFruit Daferson.</p>
+            <p className="mt-4 max-w-sm text-rosa-100">Panel administrativo de ChocoFruit Daferson.</p>
           </div>
-          <p className="text-xs text-cacao-300">© {new Date().getFullYear()} ChocoFruit Daferson</p>
+          <p className="text-xs text-rosa-200">© {new Date().getFullYear()} ChocoFruit Daferson</p>
         </div>
       </section>
       <section className="flex items-center justify-center p-6">

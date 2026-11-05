@@ -25,7 +25,7 @@ export { cn };
 
 type Variante = "primario" | "secundario" | "fantasma" | "peligro";
 const VARIANTES: Record<Variante, string> = {
-  primario: "bg-cacao-700 text-white shadow-sm hover:bg-cacao-800 active:bg-cacao-900",
+  primario: "bg-rosa-600 text-white shadow-sm hover:bg-rosa-700 active:bg-rosa-800",
   secundario: "bg-white text-stone-700 ring-1 ring-stone-200 shadow-sm hover:bg-stone-50 hover:ring-stone-300",
   fantasma: "text-stone-600 hover:bg-stone-100 hover:text-stone-900",
   peligro: "bg-fresa-600 text-white shadow-sm hover:bg-fresa-700",
