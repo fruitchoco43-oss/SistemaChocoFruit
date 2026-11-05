@@ -179,6 +179,7 @@ class EstadoPago(str, enum.Enum):
 class MetodoPago(str, enum.Enum):
     transferencia = "transferencia"
     efectivo = "efectivo"
+    tarjeta = "tarjeta"  # cobrada fuera de la página (datáfono / link de pago); solo se registra
 
 
 class Pedido(TimestampMixin, Base):

@@ -22,16 +22,19 @@ const SELECT_ESTADO: Record<EstadoPedido, string> = {
 function mensajeCliente(p: Pedido): string {
   const lineas = p.items.map((i) => `• ${i.cantidad}× ${i.descripcion} — ${fmtDinero(i.precio_unitario * i.cantidad)}`);
   const saldo = p.total - p.monto_pagado;
+  const anticipo = Math.round(p.total * 50) / 100;
+  const faltaAnticipo = anticipo - p.monto_pagado;
   return [
-    `¡Hola ${p.cliente_nombre.split(" ")[0]}! 🍓 Este es el resumen de tu pedido #${p.id}:`,
+    `¡Hola ${p.cliente_nombre.split(" ")[0]}! Este es el resumen de tu pedido #${p.id}:`,
     "",
     ...lineas,
     p.costo_envio ? `• Envío${p.zona_nombre ? ` (${p.zona_nombre})` : ""} — ${fmtDinero(p.costo_envio)}` : "",
     "",
     `*Total: ${fmtDinero(p.total)}*`,
     p.monto_pagado > 0 ? `Recibido: ${fmtDinero(p.monto_pagado)}` : "",
-    saldo > 0.009 ? `Saldo pendiente: ${fmtDinero(saldo)}` : "✅ Pago completo",
-    p.fecha_entrega ? `\n📅 Entrega: ${fmtFecha(p.fecha_entrega, true)}` : "",
+    faltaAnticipo > 0.009 ? `Para confirmar tu pedido necesitamos el 50% de anticipo: *${fmtDinero(faltaAnticipo)}*` : "",
+    saldo > 0.009 ? `Saldo pendiente: ${fmtDinero(saldo)}` : "Pago completo",
+    p.fecha_entrega ? `\nEntrega: ${fmtFecha(p.fecha_entrega, true)}` : "",
   ]
     .filter((x) => x !== "")
     .join("\n");

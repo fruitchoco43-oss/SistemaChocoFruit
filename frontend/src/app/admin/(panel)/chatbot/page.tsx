@@ -42,7 +42,7 @@ function Vista({ nodos }: { nodos: ChatbotNodo[] }) {
       </div>
       <div className="space-y-3 bg-cacao-50/50 p-4 text-sm">
         <div className="max-w-[85%] rounded-2xl rounded-tl-sm bg-white p-3 shadow-sm ring-1 ring-stone-200/70">
-          {actual ? <p className="whitespace-pre-line">{actual.respuesta}</p> : <p>¡Hola! 👋 ¿En qué te puedo ayudar?</p>}
+          {actual ? <p className="whitespace-pre-line">{actual.respuesta}</p> : <p>Hola, ¿en qué te podemos ayudar?</p>}
           {actual?.accion_whatsapp && (
             <span className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-2.5 py-1 text-xs font-medium text-white">
               <MessageCircle className="size-3.5" /> Escribir por WhatsApp
@@ -61,7 +61,7 @@ function Vista({ nodos }: { nodos: ChatbotNodo[] }) {
           ))}
           {ruta.length > 0 && (
             <button onClick={() => setRuta([])} className="rounded-full px-3 py-1.5 text-xs font-medium text-stone-500 hover:bg-stone-100">
-              ↺ Menú principal
+              Volver al menú principal
             </button>
           )}
         </div>

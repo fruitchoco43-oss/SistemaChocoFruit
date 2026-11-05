@@ -3,7 +3,7 @@
 export type Rol = "admin" | "empleado";
 export type EstadoPedido = "pendiente" | "confirmado" | "en_preparacion" | "entregado" | "cancelado";
 export type EstadoPago = "pendiente" | "abonado" | "pagado";
-export type MetodoPago = "transferencia" | "efectivo";
+export type MetodoPago = "transferencia" | "efectivo" | "tarjeta";
 export type TipoPedido = "producto" | "alquiler";
 export type TipoMovimiento = "entrada" | "salida" | "ajuste";
 

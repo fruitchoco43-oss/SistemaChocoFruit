@@ -225,7 +225,7 @@ export function PedidoForm({
           <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
             {cab.tipo === "producto" ? (
               <Select value="" onChange={(e) => agregarProducto(e.target.value)} aria-label="Agregar producto">
-                <option value="">＋ Agregar producto del catálogo…</option>
+                <option value="">Agregar producto del catálogo…</option>
                 {productos?.map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.nombre} — {fmtDinero(p.precio)}
@@ -234,7 +234,7 @@ export function PedidoForm({
               </Select>
             ) : (
               <Select value="" onChange={(e) => agregarMaquina(e.target.value)} aria-label="Agregar máquina">
-                <option value="">＋ Agregar máquina…</option>
+                <option value="">Agregar máquina…</option>
                 {maquinas?.map((m) => (
                   <option key={m.id} value={m.id}>
                     {m.nombre} — {fmtDinero(m.precio)} / {m.duracion_horas} h
@@ -447,6 +447,7 @@ export function PedidoForm({
                 <Select id="p-met" value={cab.metodo_pago} onChange={(e) => setCab({ ...cab, metodo_pago: e.target.value as MetodoPago })}>
                   <option value="transferencia">Transferencia</option>
                   <option value="efectivo">Efectivo</option>
+                  <option value="tarjeta">Tarjeta</option>
                 </Select>
               </Field>
               <Field label="Estado" htmlFor="p-est">
@@ -462,6 +463,16 @@ export function PedidoForm({
             <Field label="Monto recibido" htmlFor="p-pag" error={err("monto_pagado")}>
               <div className="flex gap-2">
                 <Input id="p-pag" type="number" min={0} step="0.01" prefijo="$" value={cab.monto_pagado} onChange={(e) => setCab({ ...cab, monto_pagado: e.target.value })} placeholder="0.00" />
+                <Button
+                  type="button"
+                  variante="secundario"
+                  tam="sm"
+                  className="h-10 shrink-0"
+                  title="Anticipo del 50% para confirmar el pedido"
+                  onClick={() => setCab({ ...cab, monto_pagado: (Math.round(total * 50) / 100).toFixed(2) })}
+                >
+                  50%
+                </Button>
                 <Button type="button" variante="secundario" tam="sm" className="h-10 shrink-0" onClick={() => setCab({ ...cab, monto_pagado: total.toFixed(2) })}>
                   Total
                 </Button>
@@ -496,7 +507,7 @@ export function PedidoForm({
               <div className="flex justify-between">
                 <dt className="text-stone-500">Saldo pendiente</dt>
                 <dd className={cn("font-semibold tabular-nums", saldo > 0 ? "text-fresa-700" : "text-emerald-700")}>
-                  {saldo > 0 ? fmtDinero(saldo) : "Pagado ✓"}
+                  {saldo > 0 ? fmtDinero(saldo) : "Pagado"}
                 </dd>
               </div>
             </dl>
