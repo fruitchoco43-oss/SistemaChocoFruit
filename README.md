@@ -36,15 +36,21 @@ Cambios en `backend/app/models.py` → `alembic revision --autogenerate -m "desc
 
 ## Despliegue
 
-**Railway (backend + BD)**
-1. Nuevo proyecto → *Deploy from GitHub repo* → Root Directory: `backend`.
+**Railway (backend + BD)** — se configura desde la UI (Config-as-code está deprecado)
+1. Nuevo proyecto → *Deploy from GitHub repo* → `SistemaChocoFruit`.
 2. Agregar servicio **PostgreSQL** en el mismo proyecto.
-3. Variables del servicio backend:
+3. Settings del servicio backend:
+   - Root Directory: `/backend`
+   - Pre-deploy step: `alembic upgrade head`
+   - Start Command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+   - Healthcheck Path: `/api/health`
+   - Watch Paths: `/backend/**`
+4. Variables del servicio backend:
    - `DATABASE_URL` = `${{Postgres.DATABASE_URL}}`
    - `JWT_SECRET` = valor largo aleatorio
    - `CORS_ORIGINS` = URL de Vercel (ej. `https://chocofruit.vercel.app`)
-4. `railway.json` ya corre las migraciones antes de cada deploy y usa `/api/health` como healthcheck.
-5. Crear el admin una vez: `railway run python -m scripts.crear_admin ...`
+5. Networking → Generate Domain.
+6. Crear el admin una vez (Shell del servicio): `python -m scripts.crear_admin "Nombre" correo "clave"`
 
 **Vercel (frontend)**
 1. *Import Git Repository* → Root Directory: `frontend`.
