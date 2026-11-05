@@ -34,6 +34,29 @@ npm run dev
 
 Cambios en `backend/app/models.py` → `alembic revision --autogenerate -m "descripcion"` y `alembic upgrade head`.
 
+## Panel administrativo
+
+`/admin` (login con usuarios creados por `scripts.crear_admin` o desde *Usuarios*).
+
+| Sección | Qué hace |
+|---|---|
+| Resumen | Ventas, cobrado, por cobrar, gasto en materia prima, utilidad bruta, próximas entregas, insumos bajo mínimo, más vendidos |
+| Pedidos | Registro de pedidos de WhatsApp con personalización, envío por zona, abonos, cambio rápido de estado y resumen para enviar al cliente |
+| Catálogo | Productos, categorías, complementos, alquiler de máquinas, galería, zonas de entrega |
+| Materia prima | Insumos (stock y costo promedio), compras (suman stock), movimientos (salidas/ajustes), proveedores |
+| Ajustes | Chatbot de reglas (árbol de opciones + vista previa), datos del negocio, usuarios (solo admin) |
+
+Reglas de negocio en el backend: totales y estado de pago del pedido se calculan en el servidor; una compra suma stock y recalcula el costo promedio ponderado; no se puede sacar más stock del que hay ni borrar una compra ya consumida.
+
+## Pruebas (backend)
+
+```bash
+docker exec chocofruit-db createdb -U chocofruit chocofruit_test   # una sola vez
+cd backend
+pip install -r requirements-dev.txt
+pytest
+```
+
 ## Despliegue
 
 **Railway (backend + BD)** — se configura desde la UI (Config-as-code está deprecado)

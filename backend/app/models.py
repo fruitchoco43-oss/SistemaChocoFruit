@@ -303,6 +303,7 @@ class MovimientoInventario(Base):
     fecha: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), index=True)
 
     materia_prima: Mapped[MateriaPrima] = relationship()
+    compra: Mapped[Compra | None] = relationship()
 
 
 # ---------------------------------------------------------------- Chatbot (reglas, costo 0)

@@ -1,3 +1,5 @@
+from datetime import timedelta, timezone
+
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -27,3 +29,6 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+# Ecuador continental: UTC-5 sin horario de verano.
+TZ_LOCAL = timezone(timedelta(hours=-5))

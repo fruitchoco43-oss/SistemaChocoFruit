@@ -1,26 +1,56 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Marca: cacao (primario) + fresa (acento) */
+  --color-cacao-50: #faf6f3;
+  --color-cacao-100: #f3e9e2;
+  --color-cacao-200: #e6d1c3;
+  --color-cacao-300: #d2af98;
+  --color-cacao-400: #b9876b;
+  --color-cacao-500: #9d6a4d;
+  --color-cacao-600: #80523a;
+  --color-cacao-700: #66402e;
+  --color-cacao-800: #4b2f22;
+  --color-cacao-900: #2f1d15;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-fresa-50: #fff1f3;
+  --color-fresa-100: #ffe0e5;
+  --color-fresa-500: #f0405e;
+  --color-fresa-600: #dc2448;
+  --color-fresa-700: #b9183a;
+
+  --color-superficie: #fbf8f6;
+
+  --animate-entrar: entrar 160ms ease-out;
+  --animate-subir: subir 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  @keyframes entrar {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes subir {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to { opacity: 1; transform: none; }
   }
 }
 
+html {
+  color-scheme: light;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-superficie);
+  color: var(--color-stone-800);
+}
+
+/* Scroll discreto en tablas y modales */
+.scroll-fino {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-stone-300) transparent;
+}
+
+input[type="number"]::-webkit-inner-spin-button {
+  opacity: 0.4;
 }
