@@ -1,8 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-  <circle cx="24" cy="24" r="24" fill="#ec2a8c"/>
-  <path d="M24 40c-7.6-3.5-12-10-12-16.6a12 12 0 0 1 24 0C36 30 31.6 36.5 24 40Z" fill="#ff4d6d"/>
-  <path d="M12.6 21.6c3.6 2.4 7.4 3.5 11.4 3.5s7.8-1.1 11.4-3.5a12 12 0 0 0-22.8 0Z" fill="#4b2a1c"/>
-  <path d="M13 26.2c2.4 1.7 5 1 7.4 1.8s5.6 1.3 8 .3 4.6-1 6.6-2.2" stroke="#4b2a1c" stroke-width="3" stroke-linecap="round" fill="none"/>
-  <path d="M15.5 18.8c3 1.4 5.6-.8 8.6.4s5.4.8 8.4-.6" stroke="#fff4e6" stroke-width="1.4" stroke-linecap="round" fill="none"/>
-  <path d="M24 11.4V7.6M24 11.4c-2-2.2-4.6-2.8-6.6-2.2M24 11.4c2-2.2 4.6-2.8 6.6-2.2" stroke="#3fa34d" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <defs><clipPath id="c"><path d="M100 222C46 194 20 140 26 96 31 60 62 46 100 56c38-10 69 4 74 40 6 44-20 98-74 126Z"/></clipPath></defs>
+  <circle cx="24" cy="24" r="23.25" fill="#ffe6ef" stroke="#ffcde0" stroke-width="1.5"/>
+  <g transform="translate(10.5 7.6) scale(0.135)">
+    <path d="M100 52V22" stroke="#3f9a55" stroke-width="9" stroke-linecap="round"/>
+    <path d="M100 56C88 36 66 30 48 38c16 2 34 10 52 18Z" fill="#4fb067"/>
+    <path d="M100 56c12-20 34-26 52-18-16 2-34 10-52 18Z" fill="#43a05b"/>
+    <path d="M100 222C46 194 20 140 26 96 31 60 62 46 100 56c38-10 69 4 74 40 6 44-20 98-74 126Z" fill="#f2405c"/>
+    <g clip-path="url(#c)">
+      <path d="M0 0h200v118c-14 10-28 10-40 0s-28-12-42 0-30 12-44 0-30-10-44 2-22 10-30 2V0Z" fill="#4b2a1c"/>
+      <path d="M30 92c22 12 40-8 62 2s38 8 60-4 20-4 24 0" stroke="#fff4f8" stroke-width="9" stroke-linecap="round" fill="none"/>
+    </g>
+  </g>
 </svg>

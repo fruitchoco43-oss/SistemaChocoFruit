@@ -23,6 +23,7 @@ import { Asistente } from "@/components/publico/Asistente";
 import { Catalogo } from "@/components/publico/Catalogo";
 import { CopiarDatos } from "@/components/publico/CopiarDatos";
 import { Encabezado } from "@/components/publico/Encabezado";
+import { Fresa } from "@/components/publico/Fresa";
 import { IconoWhatsApp } from "@/components/publico/IconoWhatsApp";
 import { Thumb } from "@/components/ui";
 import { fmtDinero } from "@/lib/format";
@@ -127,7 +128,7 @@ export default async function Inicio() {
                 </div>
               ) : (
                 <div className="relative flex aspect-square items-center justify-center">
-                  <Sello prioridad className="animate-flotar w-[74%] shadow-[0_30px_60px_-10px_rgba(95,17,49,0.45)]" />
+                  <Fresa idBase="fresa-inicio" className="animate-flotar w-[56%] drop-shadow-[0_30px_40px_rgba(95,17,49,0.35)]" />
                 </div>
               )}
               <div className="animate-flotar absolute left-0 top-[12%] flex items-center gap-3 rounded-2xl bg-white/95 px-4 py-3 shadow-xl shadow-rosa-900/10 ring-1 ring-rosa-100 backdrop-blur [animation-delay:-2s]">
