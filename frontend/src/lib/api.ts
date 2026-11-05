@@ -50,6 +50,9 @@ function parseError(status: number, data: unknown): ApiError {
   return new ApiError(status, `Error ${status}`);
 }
 
+/** Id único de esta pestaña: el backend lo adjunta a los eventos en vivo que provoca. */
+export const CLIENTE_ID = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : String(Math.random()).slice(2);
+
 /** Se dispara cuando el token expira, para que el panel vuelva al login. */
 export const SESION_EXPIRADA = "chocofruit:sesion-expirada";
 
@@ -69,6 +72,7 @@ export async function api<T = unknown>(
       headers: {
         ...(body !== undefined && !esForm ? { "Content-Type": "application/json" } : {}),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        "X-Cliente-Id": CLIENTE_ID,
         ...headers,
       },
     });

@@ -8,6 +8,7 @@ from app import models as m
 from app import schemas as s
 from app.crud import commit_o_409, obtener_o_404
 from app.database import get_db
+from app.eventos import broker
 from app.security import hash_password, require_admin
 
 router = APIRouter(prefix="/api/usuarios", tags=["usuarios"])
@@ -37,6 +38,7 @@ def crear(datos: s.UsuarioCreate, db: Session = Depends(get_db), _=Depends(requi
     db.add(user)
     commit_o_409(db, YA_EXISTE)
     db.refresh(user)
+    broker.publicar("usuarios", "crear", user.id)
     return user
 
 
@@ -55,6 +57,7 @@ def actualizar(id_: int, datos: s.UsuarioUpdate, db: Session = Depends(get_db), 
         setattr(user, k, v)
     commit_o_409(db, YA_EXISTE)
     db.refresh(user)
+    broker.publicar("usuarios", "actualizar", user.id)
     return user
 
 
@@ -65,3 +68,4 @@ def eliminar(id_: int, db: Session = Depends(get_db), yo: m.Usuario = Depends(re
     user = obtener_o_404(db, m.Usuario, id_)
     db.delete(user)
     db.commit()
+    broker.publicar("usuarios", "eliminar", id_)

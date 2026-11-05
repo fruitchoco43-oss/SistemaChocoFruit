@@ -151,3 +151,46 @@ def test_imagenes_subida_y_entrega(admin):
     assert grande.status_code == 413
     assert publico.post("/api/imagenes", files={"archivo": ("foto.png", png, "image/png")}).status_code == 401
     assert publico.get("/api/imagenes/" + "0" * 32).status_code == 404
+
+
+def test_eventos_se_publican_con_origen(admin):
+    from app.eventos import broker
+
+    broker.historial.clear()
+    p = admin.post("/api/productos", json={"nombre": "Torta", "precio": 10}, headers={"X-Cliente-Id": "pestana-1"}).json()
+    admin.patch(f"/api/productos/{p['id']}", json={"precio": 12})
+    pedido = admin.post("/api/pedidos", json={"cliente_nombre": "Ana", "cliente_telefono": "0991234567",
+                                              "items": [{"descripcion": "Torta", "cantidad": 1, "precio_unitario": 12}]}).json()
+    ins = admin.post("/api/insumos", json={"nombre": "Harina", "unidad": "kg"}).json()
+    admin.post("/api/compras", json={"fecha": "2026-11-01", "items": [{"materia_prima_id": ins["id"], "cantidad": 2, "costo_unitario": 1}]})
+
+    ev = list(broker.historial)
+    assert ev[0] == {"canal": "productos", "accion": "crear", "id": p["id"], "origen": "pestana-1"}
+    assert ev[1]["accion"] == "actualizar" and ev[1]["origen"] is None
+    assert {"canal": "pedidos", "accion": "crear", "id": pedido["id"], "cliente": "Ana", "total": 12.0}.items() <= ev[2].items()
+    assert [e["canal"] for e in ev[-2:]] == ["compras", "insumos"]
+
+
+def test_canal_privado_exige_sesion():
+    c = TestClient(app)
+    assert c.get("/api/eventos", params={"token": "falso"}).status_code == 401
+    assert c.get("/api/eventos").status_code == 422
+
+
+def test_broker_filtra_canal_publico():
+    import asyncio
+
+    from app.eventos import Broker
+
+    async def probar():
+        b = Broker()
+        b.iniciar(asyncio.get_running_loop())
+        panel, publico = b.suscribir(False), b.suscribir(True)
+        b.publicar("pedidos", "crear", 1)
+        b.publicar("productos", "actualizar", 2)
+        await asyncio.sleep(0)
+        return [panel.cola.get_nowait() for _ in range(panel.cola.qsize())], [publico.cola.get_nowait() for _ in range(publico.cola.qsize())]
+
+    panel, publico = asyncio.run(probar())
+    assert [e["canal"] for e in panel] == ["pedidos", "productos"]
+    assert publico == [{"canal": "catalogo"}]  # la web pública no recibe datos de pedidos

@@ -17,6 +17,7 @@ from app import models as m
 from app import schemas as s
 from app.crud import crud_router, obtener_o_404
 from app.database import get_db
+from app.eventos import broker
 from app.security import get_current_user
 
 proveedores = crud_router(
@@ -108,6 +109,8 @@ def crear_compra(datos: s.CompraIn, db: Session = Depends(get_db), user: m.Usuar
     db.add(compra)
     db.commit()
     db.refresh(compra)
+    broker.publicar("compras", "crear", compra.id)
+    broker.publicar("insumos", "actualizar")  # cambió el stock
     return _compra_out(compra)
 
 
@@ -126,6 +129,8 @@ def eliminar_compra(id_: int, db: Session = Depends(get_db)):
     db.query(m.MovimientoInventario).filter(m.MovimientoInventario.compra_id == compra.id).delete()
     db.delete(compra)
     db.commit()
+    broker.publicar("compras", "eliminar", id_)
+    broker.publicar("insumos", "actualizar")
 
 
 # ---------------------------------------------------------------- Movimientos
@@ -175,4 +180,6 @@ def crear_movimiento(datos: s.MovimientoIn, db: Session = Depends(get_db), user:
     db.add(mv)
     db.commit()
     db.refresh(mv)
+    broker.publicar("movimientos", "crear", mv.id)
+    broker.publicar("insumos", "actualizar", insumo.id)
     return _mov_out(mv)

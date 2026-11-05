@@ -96,10 +96,10 @@ export function PedidoForm({
   onCerrar: () => void;
   onGuardado: (p: Pedido) => void;
 }) {
-  const { data: productos } = useApi<Producto[]>("/api/productos?activo=true");
-  const { data: maquinas } = useApi<Maquina[]>("/api/maquinas?activo=true");
-  const { data: zonas } = useApi<Zona[]>("/api/zonas?activo=true");
-  const { data: complementos } = useApi<Complemento[]>("/api/complementos?activo=true");
+  const { data: productos } = useApi<Producto[]>("/api/productos?activo=true", ["productos"]);
+  const { data: maquinas } = useApi<Maquina[]>("/api/maquinas?activo=true", ["maquinas"]);
+  const { data: zonas } = useApi<Zona[]>("/api/zonas?activo=true", ["zonas"]);
+  const { data: complementos } = useApi<Complemento[]>("/api/complementos?activo=true", ["complementos"]);
 
   const [cab, setCab] = useState(() => cabDesde(pedido));
   const [lineas, setLineas] = useState<Linea[]>(() => lineasDesde(pedido));

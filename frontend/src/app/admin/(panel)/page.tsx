@@ -11,6 +11,8 @@ import { ESTADOS_PAGO, ESTADOS_PEDIDO, fmtDinero, fmtFecha, fmtNumero, hoyISO } 
 import { useApi } from "@/lib/hooks";
 import type { Dashboard, EstadoPedido } from "@/lib/types";
 
+const VIVO_RESUMEN = ["pedidos", "compras", "insumos", "movimientos"];
+
 type Rango = "mes" | "mes_pasado" | "7d" | "30d";
 
 function rango(r: Rango): { desde: string; hasta: string; label: string } {
@@ -66,7 +68,7 @@ export default function ResumenPage() {
   const router = useRouter();
   const [r, setR] = useState<Rango>("mes");
   const { desde, hasta, label } = rango(r);
-  const { data: d, cargando } = useApi<Dashboard>(`/api/dashboard${qs({ desde, hasta })}`);
+  const { data: d, cargando } = useApi<Dashboard>(`/api/dashboard${qs({ desde, hasta })}`, VIVO_RESUMEN);
   const maxTop = Math.max(1, ...(d?.top_productos.map((t) => t.cantidad) ?? [1]));
   const totalEstados = d ? Object.values(d.pedidos_por_estado).reduce((a, b) => a + b, 0) : 0;
   const saludo = new Date().getHours() < 12 ? "Buenos días" : new Date().getHours() < 19 ? "Buenas tardes" : "Buenas noches";

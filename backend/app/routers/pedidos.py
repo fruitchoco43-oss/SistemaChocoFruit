@@ -12,6 +12,7 @@ from app import schemas as s
 from app.config import TZ_LOCAL
 from app.crud import obtener_o_404
 from app.database import get_db
+from app.eventos import broker
 from app.security import get_current_user
 
 router = APIRouter(prefix="/api/pedidos", tags=["pedidos"])
@@ -94,6 +95,7 @@ def crear(datos: s.PedidoIn, db: Session = Depends(get_db), user: m.Usuario = De
     db.add(pedido)
     db.commit()
     db.refresh(pedido)
+    broker.publicar("pedidos", "crear", pedido.id, cliente=pedido.cliente_nombre, total=float(pedido.total))
     return _salida(pedido)
 
 
@@ -103,6 +105,7 @@ def actualizar(id_: int, datos: s.PedidoIn, db: Session = Depends(get_db), _=Dep
     _aplicar(db, pedido, datos)
     db.commit()
     db.refresh(pedido)
+    broker.publicar("pedidos", "actualizar", pedido.id)
     return _salida(pedido)
 
 
@@ -117,6 +120,7 @@ def cambiar_estado(id_: int, datos: s.PedidoEstadoIn, db: Session = Depends(get_
         pedido.estado_pago = _estado_pago(pedido.total, datos.monto_pagado)
     db.commit()
     db.refresh(pedido)
+    broker.publicar("pedidos", "actualizar", pedido.id, estado=pedido.estado.value)
     return _salida(pedido)
 
 
@@ -124,3 +128,4 @@ def cambiar_estado(id_: int, datos: s.PedidoEstadoIn, db: Session = Depends(get_
 def eliminar(id_: int, db: Session = Depends(get_db), _=Depends(get_current_user)):
     db.delete(obtener_o_404(db, m.Pedido, id_))
     db.commit()
+    broker.publicar("pedidos", "eliminar", id_)

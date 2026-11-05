@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { Isotipo, Logo } from "@/components/Logo";
+import { ActualizarEnVivo } from "@/components/publico/ActualizarEnVivo";
 import { Asistente } from "@/components/publico/Asistente";
 import { Catalogo } from "@/components/publico/Catalogo";
 import { CopiarDatos } from "@/components/publico/CopiarDatos";
@@ -29,7 +30,8 @@ import { fmtDinero } from "@/lib/format";
 import { MARCA } from "@/lib/marca";
 import { cargarCatalogo, cargarChatbot, enlaceWhatsApp, MENSAJE_GENERAL, numeroWhatsApp } from "@/lib/publico";
 
-export const revalidate = 60;
+// Siempre con datos frescos; además <ActualizarEnVivo /> refresca sin F5 cuando cambia algo en el panel.
+export const dynamic = "force-dynamic";
 
 const OCASIONES = ["Cumpleaños", "Aniversarios", "San Valentín", "Día de la Madre", "Graduaciones", "Baby showers", "Agradecimientos", "Solo porque sí"];
 
@@ -444,6 +446,7 @@ export default async function Inicio() {
       </footer>
 
       <Asistente nodos={chatbot} whatsapp={wa} />
+      <ActualizarEnVivo />
     </>
   );
 }

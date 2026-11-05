@@ -21,10 +21,10 @@ export interface CatalogoPublico {
 
 const VACIO: CatalogoPublico = { negocio: null, categorias: [], productos: [], complementos: [], zonas: [], maquinas: [], galeria: [] };
 
-/** Se ejecuta en el servidor de Vercel; se revalida cada 60 s. Si la API no responde, la página igual se muestra. */
+/** Se ejecuta en el servidor de Vercel en cada visita (datos siempre al día). Si la API no responde, la página igual se muestra. */
 export async function cargarCatalogo(): Promise<CatalogoPublico> {
   try {
-    const r = await fetch(`${API_URL}/api/publico/catalogo`, { next: { revalidate: 60 } });
+    const r = await fetch(`${API_URL}/api/publico/catalogo`, { cache: "no-store" });
     if (!r.ok) return VACIO;
     return { ...VACIO, ...(await r.json()) };
   } catch {
@@ -34,7 +34,7 @@ export async function cargarCatalogo(): Promise<CatalogoPublico> {
 
 export async function cargarChatbot(): Promise<ChatbotNodo[]> {
   try {
-    const r = await fetch(`${API_URL}/api/publico/chatbot`, { next: { revalidate: 60 } });
+    const r = await fetch(`${API_URL}/api/publico/chatbot`, { cache: "no-store" });
     return r.ok ? await r.json() : [];
   } catch {
     return [];

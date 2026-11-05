@@ -14,8 +14,8 @@ function Contenido() {
   const inicial = useSearchParams().get("insumo") ?? "";
   const [insumoId, setInsumoId] = useState(inicial);
   const [tipo, setTipo] = useState<"" | TipoMovimiento>("");
-  const { data: insumos, recargar: recargarInsumos } = useApi<Insumo[]>("/api/insumos?activo=true");
-  const { data, cargando, recargar } = useApi<Movimiento[]>(`/api/movimientos${qs({ materia_prima_id: insumoId, tipo })}`);
+  const { data: insumos, recargar: recargarInsumos } = useApi<Insumo[]>("/api/insumos?activo=true", ["insumos"]);
+  const { data, cargando, recargar } = useApi<Movimiento[]>(`/api/movimientos${qs({ materia_prima_id: insumoId, tipo })}`, ["movimientos"]);
 
   const [abierto, setAbierto] = useState(false);
   const [f, setF] = useState({ materia_prima_id: "", tipo: "salida" as TipoMovimiento, cantidad: "", motivo: "" });

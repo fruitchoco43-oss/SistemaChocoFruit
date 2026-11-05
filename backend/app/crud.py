@@ -12,6 +12,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.eventos import broker
 from app.security import get_current_user
 
 
@@ -60,12 +61,14 @@ def crud_router(
     con_slug: bool = False,
     dependencia: Callable[..., Any] = get_current_user,
     validar: Callable[[Session, dict, Any | None], None] | None = None,
+    canal: str | None = None,
 ) -> APIRouter:
     """Genera GET (lista / detalle), POST, PATCH y DELETE para `model`.
 
     `validar(db, datos, obj_existente)` permite reglas extra (p. ej. claves foráneas).
     """
     router = APIRouter(prefix=prefix, tags=[tag], dependencies=[Depends(dependencia)])
+    canal = canal or prefix.rstrip("/").rsplit("/", 1)[-1]  # /api/productos -> productos
 
     @router.get("", response_model=list[out_schema])
     def listar(
@@ -97,6 +100,7 @@ def crud_router(
         db.add(obj)
         commit_o_409(db)
         db.refresh(obj)
+        broker.publicar(canal, "crear", obj.id)
         return obj
 
     @router.patch("/{id_}", response_model=out_schema)
@@ -111,6 +115,7 @@ def crud_router(
             obj.slug = slug_unico(db, model, valores["nombre"], excluir_id=obj.id)
         commit_o_409(db)
         db.refresh(obj)
+        broker.publicar(canal, "actualizar", obj.id)
         return obj
 
     @router.delete("/{id_}", status_code=status.HTTP_204_NO_CONTENT)
@@ -118,5 +123,6 @@ def crud_router(
         obj = obtener_o_404(db, model, id_)
         db.delete(obj)
         commit_o_409(db, "No se puede eliminar: está siendo usado en otros registros. Desactívalo en su lugar.")
+        broker.publicar(canal, "eliminar", id_)
 
     return router

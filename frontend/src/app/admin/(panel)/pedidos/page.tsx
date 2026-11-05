@@ -19,6 +19,8 @@ const SELECT_ESTADO: Record<EstadoPedido, string> = {
   cancelado: "bg-stone-100 text-stone-600 ring-stone-200",
 };
 
+const VIVO_PEDIDOS = ["pedidos", "zonas"];
+
 function mensajeCliente(p: Pedido): string {
   const lineas = p.items.map((i) => `• ${i.cantidad}× ${i.descripcion} — ${fmtDinero(i.precio_unitario * i.cantidad)}`);
   const saldo = p.total - p.monto_pagado;
@@ -47,7 +49,7 @@ function Contenido() {
   const [desde, setDesde] = useState("");
   const [hasta, setHasta] = useState("");
   const q = useDebounce(busqueda);
-  const { data, cargando, recargar, setData } = useApi<Pedido[]>(`/api/pedidos${qs({ q, desde, hasta })}`);
+  const { data, cargando, recargar, setData } = useApi<Pedido[]>(`/api/pedidos${qs({ q, desde, hasta })}`, VIVO_PEDIDOS);
 
   const [form, setForm] = useState<{ abierto: boolean; pedido: Pedido | null }>({ abierto: nuevo, pedido: null });
   const [borrar, setBorrar] = useState<Pedido | null>(null);

@@ -8,6 +8,7 @@ from app import models as m
 from app import schemas as s
 from app.crud import crud_router
 from app.database import get_db
+from app.eventos import broker
 from app.security import get_current_user
 
 
@@ -93,4 +94,5 @@ def guardar_negocio(datos: s.InfoNegocioIn, db: Session = Depends(get_db)):
             setattr(info, k, v)
     db.commit()
     db.refresh(info)
+    broker.publicar("negocio", "actualizar", info.id)
     return info

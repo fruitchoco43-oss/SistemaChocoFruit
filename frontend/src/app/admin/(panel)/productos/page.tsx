@@ -9,7 +9,7 @@ import { useApi } from "@/lib/hooks";
 import type { Categoria, Producto } from "@/lib/types";
 
 export default function ProductosPage() {
-  const { data: categorias } = useApi<Categoria[]>("/api/categorias");
+  const { data: categorias } = useApi<Categoria[]>("/api/categorias", ["categorias"]);
   const nombreCat = useMemo(() => new Map(categorias?.map((c) => [c.id, c.nombre])), [categorias]);
 
   const columnas = useMemo<Columna<Producto>[]>(

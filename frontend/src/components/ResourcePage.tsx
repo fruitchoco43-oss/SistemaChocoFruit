@@ -75,6 +75,8 @@ interface Props<T extends { id: number; activo?: boolean }> {
   onCambio?: () => void;
   /** Orden personalizado de las filas (p. ej. árbol del chatbot). */
   ordenar?: (rows: T[]) => T[];
+  /** Canales en vivo que recargan la tabla. Por defecto, el del endpoint (/api/productos -> productos). */
+  vivo?: string[];
   anchoModal?: "md" | "lg";
 }
 
@@ -109,7 +111,8 @@ export function ResourcePage<T extends { id: number; activo?: boolean }>(p: Prop
   const [filtro, setFiltro] = useState<"todos" | "activos" | "inactivos">("todos");
   const q = useDebounce(busqueda);
   const ruta = `${p.endpoint}${qs({ q, activo: filtro === "todos" ? undefined : filtro === "activos" })}`;
-  const { data: crudos, cargando, error, recargar, setData } = useApi<T[]>(ruta);
+  const canales = p.vivo ?? [p.endpoint.split("/").pop()!];
+  const { data: crudos, cargando, error, recargar, setData } = useApi<T[]>(ruta, canales);
   const { ordenar } = p;
   const data = useMemo(() => (crudos && ordenar ? ordenar(crudos) : crudos), [crudos, ordenar]);
 

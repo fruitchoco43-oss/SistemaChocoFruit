@@ -41,9 +41,9 @@ export default function ComprasPage() {
   const [desde, setDesde] = useState(inicioMes);
   const [hasta, setHasta] = useState(hoyISO);
   const [proveedorId, setProveedorId] = useState("");
-  const { data, cargando, recargar } = useApi<Compra[]>(`/api/compras${qs({ desde, hasta, proveedor_id: proveedorId })}`);
-  const { data: proveedores } = useApi<Proveedor[]>("/api/proveedores?activo=true");
-  const { data: insumos } = useApi<Insumo[]>("/api/insumos?activo=true");
+  const { data, cargando, recargar } = useApi<Compra[]>(`/api/compras${qs({ desde, hasta, proveedor_id: proveedorId })}`, ["compras"]);
+  const { data: proveedores } = useApi<Proveedor[]>("/api/proveedores?activo=true", ["proveedores"]);
+  const { data: insumos } = useApi<Insumo[]>("/api/insumos?activo=true", ["insumos"]);
 
   const [abierto, setAbierto] = useState(false);
   const [expandida, setExpandida] = useState<number | null>(null);

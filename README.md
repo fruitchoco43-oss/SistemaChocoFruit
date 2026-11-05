@@ -48,6 +48,14 @@ Cambios en `backend/app/models.py` → `alembic revision --autogenerate -m "desc
 
 Reglas de negocio en el backend: totales y estado de pago del pedido se calculan en el servidor; una compra suma stock y recalcula el costo promedio ponderado; no se puede sacar más stock del que hay ni borrar una compra ya consumida.
 
+## Tiempo real (sin F5)
+
+- El backend publica un evento en cada alta/edición/baja (`app/eventos.py`) y lo envía por **Server-Sent Events**:
+  - `/api/eventos?token=…` → panel (con sesión): cada pantalla se recarga sola, aviso de pedido nuevo e indicador "En vivo".
+  - `/api/publico/eventos` → web pública: solo recibe "catálogo cambió" y refresca los datos sin recargar la página.
+- Al volver a una pestaña o tras una reconexión, se sincroniza todo.
+- El broker vive en memoria: válido con **1 réplica** en Railway (plan actual). Con más réplicas, migrar a PostgreSQL `LISTEN/NOTIFY`.
+
 ## Pruebas (backend)
 
 ```bash

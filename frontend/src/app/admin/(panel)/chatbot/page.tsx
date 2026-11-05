@@ -72,7 +72,7 @@ function Vista({ nodos }: { nodos: ChatbotNodo[] }) {
 }
 
 export default function ChatbotPage() {
-  const { data, recargar } = useApi<ChatbotNodo[]>("/api/chatbot");
+  const { data, recargar } = useApi<ChatbotNodo[]>("/api/chatbot", ["chatbot"]);
   const nodos = useMemo(() => data ?? [], [data]);
   const niveles = useMemo(() => new Map(aplanar(nodos).map(({ nodo, nivel }) => [nodo.id, nivel])), [nodos]);
   const etiqueta = useMemo(() => new Map(nodos.map((n) => [n.id, n.etiqueta])), [nodos]);

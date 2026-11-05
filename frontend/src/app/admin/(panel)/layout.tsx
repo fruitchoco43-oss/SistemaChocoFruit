@@ -27,6 +27,9 @@ import { useEffect, useState } from "react";
 import { Logo } from "@/components/Logo";
 import { cn, IconButton, Skeleton } from "@/components/ui";
 import { useAuth } from "@/lib/auth";
+import { fmtDinero } from "@/lib/format";
+import { EnVivoProvider, useEnVivo, useEstadoVivo } from "@/lib/vivo";
+import { toast } from "sonner";
 
 const NAV = [
   {
@@ -101,6 +104,42 @@ function Navegacion({ esAdmin, onNavegar }: { esAdmin: boolean; onNavegar?: () =
   );
 }
 
+/** Indicador de conexión en tiempo real. */
+function IndicadorVivo() {
+  const estado = useEstadoVivo();
+  if (!estado) return null;
+  const enVivo = estado === "en_vivo";
+  return (
+    <span
+      title={enVivo ? "Los cambios se actualizan solos" : "Reconectando con el servidor"}
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1",
+        enVivo ? "bg-emerald-50 text-emerald-700 ring-emerald-200" : "bg-amber-50 text-amber-700 ring-amber-200",
+      )}
+    >
+      <span className="relative flex size-1.5">
+        {enVivo && <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />}
+        <span className={cn("relative inline-flex size-1.5 rounded-full", enVivo ? "bg-emerald-500" : "bg-amber-500")} />
+      </span>
+      {enVivo ? "En vivo" : estado === "conectando" ? "Conectando" : "Reconectando"}
+    </span>
+  );
+}
+
+/** Avisa de pedidos nuevos registrados desde otro dispositivo o pestaña. */
+function AvisosPedidos() {
+  const router = useRouter();
+  useEnVivo(["pedidos"], (e) => {
+    if (e.propio || e.accion !== "crear") return;
+    toast.info(`Nuevo pedido #${e.id}${e.cliente ? ` de ${e.cliente}` : ""}`, {
+      description: e.total !== undefined ? `Total ${fmtDinero(e.total)}` : undefined,
+      action: { label: "Ver", onClick: () => router.push("/admin/pedidos") },
+      duration: 8000,
+    });
+  });
+  return null;
+}
+
 export default function PanelLayout({ children }: { children: React.ReactNode }) {
   const { user, cargando, logout } = useAuth();
   const router = useRouter();
@@ -149,6 +188,8 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
   );
 
   return (
+    <EnVivoProvider>
+    <AvisosPedidos />
     <div className="min-h-dvh lg:pl-64">
       {/* Sidebar escritorio */}
       <aside className="fixed inset-y-0 left-0 hidden w-64 flex-col border-r border-stone-200/80 bg-white lg:flex">
@@ -160,22 +201,24 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
         <div className="scroll-fino flex-1 overflow-y-auto px-3 py-4">
           <Navegacion esAdmin={esAdmin} />
         </div>
-        <Link
-          href="/"
-          target="_blank"
-          className="mx-3 mb-2 flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-stone-500 hover:bg-stone-100"
-        >
-          <ExternalLink className="size-3.5" /> Ver página pública
-        </Link>
+        <div className="mx-3 mb-2 flex items-center justify-between gap-2">
+          <Link href="/" target="_blank" className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-stone-500 hover:bg-stone-100">
+            <ExternalLink className="size-3.5" /> Ver página pública
+          </Link>
+          <IndicadorVivo />
+        </div>
         {pieUsuario}
       </aside>
 
       {/* Barra superior celular */}
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-stone-200/80 bg-white/90 px-4 backdrop-blur lg:hidden">
         <Logo />
-        <IconButton label="Abrir menú" onClick={() => setMenu(true)}>
-          <Menu className="size-5" />
-        </IconButton>
+        <div className="flex items-center gap-2">
+          <IndicadorVivo />
+          <IconButton label="Abrir menú" onClick={() => setMenu(true)}>
+            <Menu className="size-5" />
+          </IconButton>
+        </div>
       </header>
 
       {menu && (
@@ -198,6 +241,7 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</main>
     </div>
+    </EnVivoProvider>
   );
 }
 
