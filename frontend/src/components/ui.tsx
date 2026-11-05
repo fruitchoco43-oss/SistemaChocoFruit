@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageOff, Loader2, Plus, Search, X } from "lucide-react";
+import { ImageOff, ImagePlus, Loader2, Search, X } from "lucide-react";
 import {
   forwardRef,
   useEffect,
@@ -14,6 +14,8 @@ import {
   type TextareaHTMLAttributes,
 } from "react";
 import { createPortal } from "react-dom";
+import { toast } from "sonner";
+import { subirImagen, urlImagen } from "@/lib/imagenes";
 
 export function cn(...c: (string | false | null | undefined)[]) {
   return c.filter(Boolean).join(" ");
@@ -295,67 +297,140 @@ export function Thumb({ src, alt, className }: { src?: string | null; alt: strin
   // Se recuerda qué URL falló: si cambia `src`, se vuelve a intentar sin efectos.
   const [fallida, setFallida] = useState<string | null>(null);
   const roto = !!src && fallida === src;
-  const setRoto = () => setFallida(src ?? null);
   if (!src || roto)
     return (
       <div className={cn("flex items-center justify-center rounded-lg bg-stone-100 text-stone-400", className)}>
         <ImageOff className="size-4" />
       </div>
     );
-  // eslint-disable-next-line @next/next/no-img-element
-  return <img src={src} alt={alt} onError={setRoto} className={cn("rounded-lg object-cover", className)} />;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={urlImagen(src)} alt={alt} loading="lazy" onError={() => setFallida(src)} className={cn("rounded-lg object-cover", className)} />
+  );
 }
 
-/** Lista de URLs de imágenes con vista previa. */
+/**
+ * Cargador de fotos: clic, arrastrar y soltar o pegar (Ctrl+V).
+ * Las fotos se comprimen en el navegador antes de subirse. La primera es la portada.
+ */
 export function ImagesInput({ value, onChange, max = 6 }: { value: string[]; onChange: (v: string[]) => void; max?: number }) {
-  const [url, setUrl] = useState("");
-  const agregar = () => {
-    const u = url.trim();
-    if (/^https?:\/\//.test(u) && !value.includes(u)) onChange([...value, u]);
-    setUrl("");
-  };
+  const inputRef = useRef<HTMLInputElement>(null);
+  const actual = useRef(value);
+  useEffect(() => {
+    actual.current = value;
+  });
+  const [subiendo, setSubiendo] = useState(0);
+  const [arrastrando, setArrastrando] = useState(false);
+  const disponibles = max - value.length - subiendo;
+
+  async function procesar(lista: FileList | File[]) {
+    const archivos = Array.from(lista).filter((f) => f.type.startsWith("image/"));
+    if (!archivos.length) return;
+    const tomar = archivos.slice(0, Math.max(0, disponibles));
+    if (tomar.length < archivos.length) toast.warning(max === 1 ? "Solo se permite una imagen." : `Máximo ${max} fotos.`);
+    if (!tomar.length) return;
+    setSubiendo((n) => n + tomar.length);
+    const resultados = await Promise.allSettled(tomar.map((f) => subirImagen(f)));
+    setSubiendo((n) => n - tomar.length);
+    const urls: string[] = [];
+    for (const r of resultados) {
+      if (r.status === "fulfilled") urls.push(r.value);
+      else toast.error(r.reason instanceof Error ? r.reason.message : "No se pudo subir una imagen");
+    }
+    if (urls.length) onChange([...actual.current, ...urls]);
+  }
+
+  const portada = (u: string) => onChange([u, ...value.filter((x) => x !== u)]);
+  const quitar = (u: string) => onChange(value.filter((x) => x !== u));
+
   return (
-    <div className="space-y-2">
-      {value.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {value.map((u, i) => (
-            <div key={u} className="group relative">
-              <Thumb src={u} alt={`Imagen ${i + 1}`} className="size-20 ring-1 ring-stone-200" />
-              {i === 0 && (
-                <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1 text-[10px] font-medium text-white">Portada</span>
-              )}
+    <div
+      onPaste={(e) => {
+        if (e.clipboardData.files.length) {
+          e.preventDefault();
+          procesar(e.clipboardData.files);
+        }
+      }}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setArrastrando(true);
+      }}
+      onDragLeave={() => setArrastrando(false)}
+      onDrop={(e) => {
+        e.preventDefault();
+        setArrastrando(false);
+        procesar(e.dataTransfer.files);
+      }}
+      className={cn("rounded-2xl transition-colors", arrastrando && "bg-cacao-50 ring-2 ring-cacao-300")}
+    >
+      <div className="flex flex-wrap gap-3">
+        {value.map((u, i) => (
+          <div key={u} className="group relative size-24 sm:size-28">
+            <Thumb src={u} alt={`Foto ${i + 1}`} className="size-full ring-1 ring-stone-200" />
+            {i === 0 && max > 1 && (
+              <span className="absolute bottom-1.5 left-1.5 rounded-md bg-stone-900/70 px-1.5 py-0.5 text-[10px] font-semibold text-white">Portada</span>
+            )}
+            {i > 0 && (
               <button
                 type="button"
-                aria-label="Quitar imagen"
-                onClick={() => onChange(value.filter((x) => x !== u))}
-                className="absolute -right-1.5 -top-1.5 rounded-full bg-white p-0.5 text-stone-600 shadow ring-1 ring-stone-200 hover:text-fresa-600"
+                onClick={() => portada(u)}
+                className="absolute bottom-1.5 left-1.5 rounded-md bg-white/90 px-1.5 py-0.5 text-[10px] font-semibold text-stone-700 shadow-sm ring-1 ring-stone-200 hover:bg-white sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100"
               >
-                <X className="size-3.5" />
+                Usar de portada
               </button>
-            </div>
-          ))}
-        </div>
-      )}
-      {value.length < max && (
-        <div className="flex gap-2">
-          <Input
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                agregar();
-              }
-            }}
-            placeholder="https://… (pega el enlace de la imagen)"
-          />
-          <Button type="button" variante="secundario" onClick={agregar} icono={<Plus className="size-4" />}>
-            Agregar
-          </Button>
-        </div>
-      )}
+            )}
+            <button
+              type="button"
+              aria-label={`Quitar foto ${i + 1}`}
+              onClick={() => quitar(u)}
+              className="absolute -right-2 -top-2 rounded-full bg-white p-1 text-stone-600 shadow ring-1 ring-stone-200 hover:text-fresa-600"
+            >
+              <X className="size-3.5" />
+            </button>
+          </div>
+        ))}
+
+        {Array.from({ length: subiendo }).map((_, i) => (
+          <div key={`sub-${i}`} className="flex size-24 flex-col items-center justify-center gap-1.5 rounded-lg bg-stone-50 text-stone-500 ring-1 ring-stone-200 sm:size-28">
+            <Loader2 className="size-5 animate-spin text-cacao-500" />
+            <span className="text-[11px] font-medium">Subiendo…</span>
+          </div>
+        ))}
+
+        {disponibles > 0 && (
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            className={cn(
+              "flex flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-stone-300 px-3 text-center text-stone-500 transition-colors",
+              "hover:border-cacao-400 hover:bg-cacao-50/60 hover:text-cacao-700 focus-visible:outline-2 focus-visible:outline-cacao-500",
+              value.length || subiendo ? "size-24 sm:size-28" : "h-28 w-full",
+            )}
+          >
+            <ImagePlus className="size-6" />
+            <span className="text-xs font-semibold">{value.length ? "Agregar" : max === 1 ? "Subir imagen" : "Subir fotos"}</span>
+            {!value.length && !subiendo && <span className="text-[11px] text-stone-400">Haz clic, arrastra o pega una imagen. JPG, PNG o WebP.</span>}
+          </button>
+        )}
+      </div>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        multiple={max > 1}
+        hidden
+        onChange={(e) => {
+          if (e.target.files) procesar(e.target.files);
+          e.target.value = "";
+        }}
+      />
     </div>
   );
+}
+
+/** Variante de una sola imagen (guarda un string). */
+export function ImageInput({ value, onChange }: { value: string | null | undefined; onChange: (v: string) => void }) {
+  return <ImagesInput value={value ? [value] : []} onChange={(v) => onChange(v[0] ?? "")} max={1} />;
 }
 
 /* ------------------------------------------------------------------ Badges, tarjetas */

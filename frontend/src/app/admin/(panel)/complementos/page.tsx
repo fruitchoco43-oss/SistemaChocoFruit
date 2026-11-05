@@ -29,7 +29,7 @@ export default function ComplementosPage() {
       campos={[
         { name: "nombre", label: "Nombre", tipo: "texto", requerido: true, placeholder: "Globo metálico" },
         { name: "precio", label: "Precio", tipo: "dinero", requerido: true },
-        { name: "imagen", label: "Imagen (enlace)", tipo: "texto", completo: true, placeholder: "https://…" },
+        { name: "imagen", label: "Imagen", tipo: "imagen" },
         { name: "activo", label: "Disponible", tipo: "switch" },
       ]}
       defaults={{ nombre: "", precio: "", imagen: "", activo: true }}

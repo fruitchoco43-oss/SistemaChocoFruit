@@ -130,3 +130,24 @@ def test_negocio(admin):
     r = admin.put("/api/negocio", json={"whatsapp": "593991234567", "horario": "9-18"}).json()
     assert r["whatsapp"] == "593991234567"
     assert TestClient(app).get("/api/publico/catalogo").json()["negocio"]["horario"] == "9-18"
+
+
+def test_imagenes_subida_y_entrega(admin):
+    png = b"\x89PNG\r\n\x1a\n" + b"\x00" * 100
+    r = admin.post("/api/imagenes", files={"archivo": ("foto.png", png, "image/png")})
+    assert r.status_code == 201
+    url = r.json()["url"]
+    assert url.startswith("/api/imagenes/")
+
+    publico = TestClient(app)  # se ven sin login (las usa la página pública)
+    g = publico.get(url)
+    assert g.status_code == 200 and g.content == png and g.headers["content-type"] == "image/png"
+    assert "immutable" in g.headers["cache-control"]
+
+    # el tipo se valida por contenido, no por el nombre
+    falso = admin.post("/api/imagenes", files={"archivo": ("x.jpg", b"<script>alert(1)</script>", "image/jpeg")})
+    assert falso.status_code == 415
+    grande = admin.post("/api/imagenes", files={"archivo": ("g.jpg", b"\xff\xd8\xff" + b"0" * (3 * 1024 * 1024), "image/jpeg")})
+    assert grande.status_code == 413
+    assert publico.post("/api/imagenes", files={"archivo": ("foto.png", png, "image/png")}).status_code == 401
+    assert publico.get("/api/imagenes/" + "0" * 32).status_code == 404

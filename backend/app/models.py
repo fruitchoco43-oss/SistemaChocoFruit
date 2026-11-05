@@ -20,6 +20,7 @@ from sqlalchemy import (
     Enum,
     ForeignKey,
     Integer,
+    LargeBinary,
     Numeric,
     String,
     Text,
@@ -305,6 +306,25 @@ class MovimientoInventario(Base):
 
     materia_prima: Mapped[MateriaPrima] = relationship()
     compra: Mapped[Compra | None] = relationship()
+
+
+# ---------------------------------------------------------------- Imágenes subidas desde el panel
+
+
+class Imagen(Base):
+    """Imágenes guardadas en la BD (ya comprimidas por el navegador, ~100-300 KB).
+
+    Se sirven en /api/imagenes/{id}; productos, galería, etc. guardan esa ruta.
+    """
+
+    __tablename__ = "imagenes"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)  # uuid hex
+    content_type: Mapped[str] = mapped_column(String(50))
+    datos: Mapped[bytes] = mapped_column(LargeBinary)
+    tamano: Mapped[int] = mapped_column(Integer)
+    nombre_original: Mapped[str | None] = mapped_column(String(200))
+    creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
 # ---------------------------------------------------------------- Chatbot (reglas, costo 0)

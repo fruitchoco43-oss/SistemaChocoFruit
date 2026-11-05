@@ -12,6 +12,7 @@ import {
   EmptyState,
   Field,
   IconButton,
+  ImageInput,
   ImagesInput,
   Input,
   Modal,
@@ -32,7 +33,7 @@ type Form = Record<string, any>;
 export interface Campo {
   name: string;
   label: string;
-  tipo: "texto" | "email" | "password" | "area" | "numero" | "dinero" | "select" | "switch" | "tags" | "colores" | "imagenes";
+  tipo: "texto" | "email" | "password" | "area" | "numero" | "dinero" | "select" | "switch" | "tags" | "colores" | "imagenes" | "imagen";
   requerido?: boolean;
   placeholder?: string;
   ayuda?: string;
@@ -93,7 +94,7 @@ function payloadPorDefecto(campos: Campo[], f: Form, editando: boolean): Form {
       v = vacio ? null : Number(v);
     } else if (c.tipo === "select") {
       v = v === "" || v === null || v === undefined ? null : c.numerico ? Number(v) : v;
-    } else if (["texto", "email", "area"].includes(c.tipo)) {
+    } else if (["texto", "email", "area", "imagen"].includes(c.tipo)) {
       v = typeof v === "string" ? v.trim() : v;
       if (v === "" && !c.requerido) v = null;
     }
@@ -406,7 +407,7 @@ function CampoForm({
   onChange: (v: any) => void;
 }) {
   const id = `campo-${c.name}`;
-  const ancho = c.completo || ["area", "tags", "colores", "imagenes", "switch"].includes(c.tipo) ? "sm:col-span-2" : "";
+  const ancho = c.completo || ["area", "tags", "colores", "imagenes", "imagen", "switch"].includes(c.tipo) ? "sm:col-span-2" : "";
   const ayuda = editando && c.ayudaEditar ? c.ayudaEditar : c.ayuda;
 
   if (c.tipo === "switch")
@@ -439,6 +440,9 @@ function CampoForm({
       break;
     case "imagenes":
       control = <ImagesInput value={valor ?? []} onChange={onChange} />;
+      break;
+    case "imagen":
+      control = <ImageInput value={valor} onChange={onChange} />;
       break;
     default:
       control = (

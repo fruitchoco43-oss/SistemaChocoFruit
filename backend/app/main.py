@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.database import get_db
-from app.routers import auth, catalogo, dashboard, inventario, pedidos, publico, usuarios
+from app.routers import auth, catalogo, dashboard, imagenes, inventario, pedidos, publico, usuarios
 
 app = FastAPI(title="ChocoFruit API", version="0.2.0")
 
@@ -28,6 +28,7 @@ app.include_router(inventario.proveedores)
 app.include_router(inventario.insumos)
 app.include_router(inventario.router)
 app.include_router(usuarios.router)
+app.include_router(imagenes.router)
 
 
 @app.get("/api/health", tags=["sistema"])

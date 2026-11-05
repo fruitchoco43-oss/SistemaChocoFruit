@@ -15,7 +15,7 @@ interface ItemGaleria {
 }
 
 const campos: Campo[] = [
-  { name: "imagen", label: "Imagen (enlace)", tipo: "texto", requerido: true, completo: true, placeholder: "https://…" },
+  { name: "imagen", label: "Foto", tipo: "imagen", requerido: true },
   { name: "titulo", label: "Título", tipo: "texto", placeholder: "Arreglo de cumpleaños" },
   { name: "orden", label: "Orden", tipo: "numero", step: "1" },
   { name: "descripcion", label: "Descripción", tipo: "area" },
