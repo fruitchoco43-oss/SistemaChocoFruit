@@ -1,0 +1,17 @@
+# Solo para desarrollo local: PostgreSQL igual al de Railway.
+# Puerto 5433 porque el 5432 lo usa el PostgreSQL instalado en Windows.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: chocofruit-db
+    environment:
+      POSTGRES_USER: chocofruit
+      POSTGRES_PASSWORD: chocofruit
+      POSTGRES_DB: chocofruit
+    ports:
+      - "5433:5432"
+    volumes:
+      - chocofruit_pgdata:/var/lib/postgresql/data
+
+volumes:
+  chocofruit_pgdata:
