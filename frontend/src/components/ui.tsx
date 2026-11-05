@@ -17,9 +17,9 @@ import { createPortal } from "react-dom";
 import { toast } from "sonner";
 import { subirImagen, urlImagen } from "@/lib/imagenes";
 
-export function cn(...c: (string | false | null | undefined)[]) {
-  return c.filter(Boolean).join(" ");
-}
+import { cn } from "@/lib/cn";
+
+export { cn };
 
 /* ------------------------------------------------------------------ Botón */
 

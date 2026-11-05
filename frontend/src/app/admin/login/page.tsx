@@ -72,9 +72,9 @@ export default function LoginPage() {
               <br />
               <span className="text-fresa-500">solo lugar.</span>
             </p>
-            <p className="mt-4 max-w-sm text-cacao-200">Panel administrativo de ChocoFruit.</p>
+            <p className="mt-4 max-w-sm text-cacao-200">Panel administrativo de ChocoFruit Daferson.</p>
           </div>
-          <p className="text-xs text-cacao-300">© {new Date().getFullYear()} ChocoFruit</p>
+          <p className="text-xs text-cacao-300">© {new Date().getFullYear()} ChocoFruit Daferson</p>
         </div>
       </section>
       <section className="flex items-center justify-center p-6">

@@ -2,6 +2,19 @@
 
 @theme {
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-playfair), ui-serif, Georgia, serif;
+
+  /* Marca ChocoFruit Daferson: rosado + blanco */
+  --color-rosa-50: #fff4f8;
+  --color-rosa-100: #ffe6ef;
+  --color-rosa-200: #ffcde0;
+  --color-rosa-300: #ffa4c5;
+  --color-rosa-400: #fb72a4;
+  --color-rosa-500: #f04a88;
+  --color-rosa-600: #db2a6d;
+  --color-rosa-700: #b81d58;
+  --color-rosa-800: #971b4b;
+  --color-rosa-900: #5f1131;
 
   /* Marca: cacao (primario) + fresa (acento) */
   --color-cacao-50: #faf6f3;
@@ -25,6 +38,17 @@
 
   --animate-entrar: entrar 160ms ease-out;
   --animate-subir: subir 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --animate-flotar: flotar 6s ease-in-out infinite;
+  --animate-aparecer: aparecer 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+  @keyframes flotar {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes aparecer {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: none; }
+  }
 
   @keyframes entrar {
     from { opacity: 0; }
@@ -53,4 +77,22 @@ body {
 
 input[type="number"]::-webkit-inner-spin-button {
   opacity: 0.4;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { AuthProvider } from "@/lib/auth";
 
 export const metadata: Metadata = {
-  title: { default: "Panel", template: "%s · Panel ChocoFruit" },
+  title: { default: "Panel", template: "%s · Panel ChocoFruit Daferson" },
   robots: { index: false, follow: false },
 };
 
